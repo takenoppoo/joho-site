@@ -2,15 +2,31 @@
 
 ■ 中身
 docs/        公開するサイト本体（GitHub Pagesで公開するフォルダ）
-  index.html 単語帳 tango.html 確認テスト kakunin.html 思考問題 shikou.html
-  分野（シラバス）syllabus.html 使い方 howto.html ほか about / contact / privacy
-  style.css app.js          見た目とボタンの動き（手で置いたファイル）
-  assets/    ロゴ（logo.svg, logo-dark.svg）・アイコン（icon.svg, favicon.svg, PNG）
-  pdf/       資料のPDF（単語帳・確認テスト・思考問題）  img/  単語帳の図と表
-data/        問題のデータ（ここを書き換えて build.py を実行すると問題が変わる）
-  tango.json 単語帳20語   kakunin.json 確認テスト40問   shikou.json 思考問題4日分   areas.json 4分野
-build.py     docs/ のHTMLとデータを作り直すスクリプト（Python3だけで動く）
-tools/       make_logo.py（ロゴのSVGを書き出す）, extract_kakunin.py / make_data.py（資料PDFからデータを作った手順）
+  index.html 目次（週の一覧）/ syllabus.html 分野 / howto.html 使い方 / about・contact・privacy
+  style.css app.js   見た目とボタンの動き（手で置いたファイル。週が増えても共通）
+  assets/            ロゴ・アイコン
+  w1/ w2/ …          週ごとのページ（index まとめ / tango 単語帳 / kakunin 確認テスト / shikou 思考問題）
+    pdf/ img/        その週のPDF・図と表（手で置く／tools/make_pdf.py で作る）
+data/        問題のデータ
+  areas.json         4分野（全部の週で共通）
+  w01/ w02/ …        週ごと：tango.json 単語帳20語 / kakunin.json 確認テスト40問 / shikou.json 思考問題4日分
+build.py     docs/ のHTML・データ・sitemapを作り直す（Python3だけで動く）
+figs.py      解説の図（SVG）を描く。data の "fig" に仕様を書くと図が出る
+weeks.py     data/ を読む共通部分
+tools/       make_pdf.py（解答・解説PDFを作る。Chromeが必要）ほか、第1週のデータを作った手順
+
+■ 新しい週を足す手順（第2週の例）
+1. data/w02/ を作り、tango.json / kakunin.json / shikou.json を置く（w01 をコピーして中身を書き換えるのが早い）
+2. python3 build.py     → docs/w2/ のページと、トップの目次カード（第2週）ができる
+3. python3 tools/make_pdf.py 2            → 確認テストの解答・解説PDF（図つき）
+   python3 tools/make_pdf.py 2 mondai     → 確認テストの問題PDF
+   （単語帳PDF・思考問題PDFは今は手で docs/w2/pdf/ に置く。置いたものは自動でリンクされる）
+4. docs/ を GitHub に上げる
+
+■ 解説に図を入れる
+kakunin.json の問題に "fig": {"type": "venn", ...} を足すだけ。種類と書き方は figs.py の先頭と、data/w01/kakunin.json の例を見る。
+種類: venn / switching / bitop / ipsplit / doubling / matrix / boxplot / pdca / sampling / scatter / array / line / hist / binary
+（Webの解説とPDFの解説の両方に出る。新しい種類の図は figs.py に fig_○○ を書き足す）
 
 ■ 公開前に必ず書き換える所（build.py の先頭 CONFIG）
 SITE_NAME / SITE_URL（公開するURL）/ EMAIL（連絡先）/ OWNER_TEXT（自己紹介）
@@ -18,7 +34,7 @@ SITE_NAME / SITE_URL（公開するURL）/ EMAIL（連絡先）/ OWNER_TEXT（�
 
 ■ 公開方法（GitHub Pages、無料）
 1. GitHub でリポジトリを作る（Public）
-2. このフォルダの中身をアップロード（docs フォルダごと）
+2. このフォルダの中身をアップロード（フォルダ構造のまま）
 3. Settings → Pages → Branch を main、フォルダを /docs にする
 
 ■ 問題を増やすとき
@@ -37,8 +53,8 @@ SITE_NAME / SITE_URL（公開するURL）/ EMAIL（連絡先）/ OWNER_TEXT（�
 python3 tools/make_logo.py（fontTools と Noto Sans CJK JP Black が必要。docs/assets/ に書き出される）
 
 ■ 今の状態
-- 思考問題は、資料のPDFを公開する形（日ごとにPDFの該当ページへ）。画面で答え合わせする形は今後の追加。
-- 問題・単語は資料のサンプル（20語・40問・4日分）。
+- 第1週：思考問題は、資料のPDFを公開する形（日ごとにPDFの該当ページへ）。画面で答え合わせする形は今後の追加。
+- 第1週は資料のサンプル（20語・40問・4日分）。
 
 ■ 広告を載せるとき（忘れずに）
 1. build.py の ADS_ENABLED を True にして `python3 build.py` → privacy.html の広告の文章がAdSense用に切り替わる

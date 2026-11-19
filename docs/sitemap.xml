@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://takenoppoo.github.io/joho-site/</loc><lastmod>2026-11-19</lastmod></url>
-<url><loc>https://takenoppoo.github.io/joho-site/tango.html</loc><lastmod>2026-11-19</lastmod></url>
-<url><loc>https://takenoppoo.github.io/joho-site/kakunin.html</loc><lastmod>2026-11-19</lastmod></url>
-<url><loc>https://takenoppoo.github.io/joho-site/shikou.html</loc><lastmod>2026-11-19</lastmod></url>
 <url><loc>https://takenoppoo.github.io/joho-site/syllabus.html</loc><lastmod>2026-11-19</lastmod></url>
 <url><loc>https://takenoppoo.github.io/joho-site/howto.html</loc><lastmod>2026-11-19</lastmod></url>
 <url><loc>https://takenoppoo.github.io/joho-site/about.html</loc><lastmod>2026-11-19</lastmod></url>
 <url><loc>https://takenoppoo.github.io/joho-site/contact.html</loc><lastmod>2026-11-19</lastmod></url>
 <url><loc>https://takenoppoo.github.io/joho-site/privacy.html</loc><lastmod>2026-11-19</lastmod></url>
+<url><loc>https://takenoppoo.github.io/joho-site/w1/index.html</loc><lastmod>2026-11-19</lastmod></url>
+<url><loc>https://takenoppoo.github.io/joho-site/w1/tango.html</loc><lastmod>2026-11-19</lastmod></url>
+<url><loc>https://takenoppoo.github.io/joho-site/w1/kakunin.html</loc><lastmod>2026-11-19</lastmod></url>
+<url><loc>https://takenoppoo.github.io/joho-site/w1/shikou.html</loc><lastmod>2026-11-19</lastmod></url>
 </urlset>

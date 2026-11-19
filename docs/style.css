@@ -90,3 +90,19 @@ ul.plain{margin:.3em 0;padding-left:1.3em}
 .abt .card{margin:0 0 14px;border:none;border-left:6px solid var(--navy);padding:14px 20px}
 .abt .card h3{font-size:1.05rem;margin:0 0 8px}
 .abt .card p{font-size:1rem;margin:0;line-height:1.9}
+
+/* 図（解説） */
+.fig{display:block;width:100%;max-width:600px;height:auto;margin:6px auto}
+.figbox{margin:10px 0;padding:6px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+/* 週のナビ・目次カード */
+.wknav{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;background:var(--cream);border-radius:10px;padding:6px 12px;margin:0 0 12px}
+.wknav b{color:var(--navy);margin-right:6px}
+.wknav a{text-decoration:none;color:#333;padding:2px 12px;border-radius:999px;font-size:.95rem}
+.wknav a.on{background:var(--navy);color:#fff;font-weight:700}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:640px){.toc{grid-template-columns:1fr}}
+.toc-c{display:block;border:1.5px solid var(--blue2);border-radius:12px;padding:16px 20px;background:#fff;text-decoration:none;color:inherit}
+.toc-c:hover{box-shadow:0 2px 10px rgba(20,40,75,.15)}
+.toc-c .tg{display:inline-block;background:var(--navy);color:#fff;font-weight:700;padding:2px 12px;border-radius:3px;font-size:1.05rem}
+.toc-c h3{margin:14px 0 6px;font-size:1.3rem;color:#1d2433}
+.toc-c p{margin:0}

@@ -49,7 +49,7 @@
     pills.forEach(function (p) { p.addEventListener("click", function () { filter(p.getAttribute("data-area")); }); });
     filter(hashParam("area") || "0");
 
-    var KEY = "joho_tango_chk", saved = {};
+    var KEY = "joho_tango_chk_w" + (window.WEEK || 1), saved = {};
     try { saved = JSON.parse(store(KEY) || "{}"); } catch (e) { saved = {}; }
     var boxes = $$("input[type=checkbox][data-k]");
     boxes.forEach(function (b) {
@@ -98,7 +98,10 @@
       });
       g.appendChild(box); menu.appendChild(g);
     }
-    var days = [1, 2, 3].map(function (d) {
+    var dayNums = [];
+    DATA.forEach(function (q) { if (dayNums.indexOf(q.day) < 0) dayNums.push(q.day); });
+    dayNums.sort(function (a, b) { return a - b; });
+    var days = dayNums.map(function (d) {
       var l = DATA.filter(function (q) { return q.day === d; });
       return { key: "day" + d, text: d + "日目（" + l.length + "問）", list: l, title: d + "日目" };
     });
@@ -183,6 +186,9 @@
       var ol = el("ol");
       q.steps.forEach(function (s) { ol.appendChild(el("li", "", s)); });
       d.appendChild(ol);
+      if (q.fig) {                       // 図（build.py が作ったSVG。自サイトで作った文字列だけを入れる）
+        var fb = el("div", "figbox"); fb.innerHTML = q.fig; d.appendChild(fb);
+      }
       var t = el("table", "w"), tb = el("tbody");
       var th = el("tr");
       ["選択肢", "判定", "理由"].forEach(function (x) { th.appendChild(el("th", "", x)); });
