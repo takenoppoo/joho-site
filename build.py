@@ -47,11 +47,15 @@ def area_tag(a):
     return f'<span class="tag a{a}">{E(AREA[a]["short"])}</span>'
 
 
+import hashlib, glob
+VER = hashlib.md5(b"".join(open(f, "rb").read() for f in sorted(glob.glob(os.path.join(ROOT, OUT, "*.js")) + glob.glob(os.path.join(ROOT, OUT, "*.css"))))).hexdigest()[:8]
+
+
 def page(fname, title, desc, body, active=None, scripts=(), base=""):
     """fname は docs からの相対パス。週のページ（w1/…）は base="../" にする"""
     full_title = SITE_NAME if fname == "index.html" else f"{title}｜{SITE_NAME}"
     nav = "".join(f'<a href="{base}{h}"{" class=on" if h == active else ""}>{n}</a>' for h, n in NAV)
-    sc = "".join(f'<script src="{s}"></script>' for s in scripts)
+    sc = "".join(f'<script src="{s}?v={VER}"></script>' for s in scripts)
     doc = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -65,7 +69,7 @@ def page(fname, title, desc, body, active=None, scripts=(), base=""):
 <link rel="icon" href="{base}assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="{base}favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="{base}assets/apple-touch-icon.png">
-<link rel="stylesheet" href="{base}style.css">
+<link rel="stylesheet" href="{base}style.css?v={VER}">
 <!-- 広告（AdSense）承認後：ここに <script async src="https://pagead2.googlesyndication.com/..."></script> を貼る -->
 </head>
 <body>
