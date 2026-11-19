@@ -1,0 +1,52 @@
+[
+ {
+  "day": 1,
+  "title": "第1問型",
+  "theme": "通信・図の選択・デジタル化・IPアドレス",
+  "areas": [
+   1,
+   2,
+   4
+  ],
+  "blanks": 12,
+  "minutes": 25,
+  "q_page": 1,
+  "k_page": 1
+ },
+ {
+  "day": 2,
+  "title": "第2問型",
+  "theme": "議席（枠）の比例配分とプログラム",
+  "areas": [
+   3
+  ],
+  "blanks": 12,
+  "minutes": 25,
+  "q_page": 4,
+  "k_page": 5
+ },
+ {
+  "day": 3,
+  "title": "第3問型",
+  "theme": "枠を配分するプログラム（条件の追加）",
+  "areas": [
+   3
+  ],
+  "blanks": 12,
+  "minutes": 25,
+  "q_page": 6,
+  "k_page": 8
+ },
+ {
+  "day": 4,
+  "title": "第4問型",
+  "theme": "サッカーのデータ分析（相関・回帰・クロス集計）",
+  "areas": [
+   4
+  ],
+  "blanks": 12,
+  "minutes": 25,
+  "q_page": 8,
+  "k_page": 11
+ }
+]
