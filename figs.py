@@ -313,7 +313,9 @@ def fig_line(s):
         o += L(sx(xv), py0, sx(xv), py0 + 5, NAVY, 1.5) + T(sx(xv), py0 + 22, str(xv), 13, GY)
     for yv in range(0, ymax + 1, 10):
         o += L(px0 - 5, sy(yv), px0, sy(yv), NAVY, 1.5) + T(px0 - 10, sy(yv) + 5, str(yv), 13, GY, "end")
-    o += L(sx(0), sy(b), sx(xmax), sy(a * xmax + b), BL, 3)
+    for (px_, py_) in s.get("points", []):
+        o += C(sx(px_), sy(py_), 3.6, BL, "#fff", 1, .85)
+    o += L(sx(0), sy(b), sx(xmax), sy(a * xmax + b), OR if s.get("points") else BL, 3)
     o += T(sx(xmax) - 6, sy(a * xmax + b) - 12, f"y ＝ {a}x ＋ {b}", 15, BL, "end", "700")
     yv = a * x + b
     o += L(sx(x), py0, sx(x), sy(yv), OR, 1.8, False, "5 4") + L(px0, sy(yv), sx(x), sy(yv), OR, 1.8, False, "5 4")
@@ -325,20 +327,32 @@ def fig_line(s):
 
 # ---------- ヒストグラム ----------
 def fig_hist(s):
-    hs = [1, 3, 7, 4, 2, 2, 5, 8, 4, 1]
+    hs = s.get("values", [1, 3, 7, 4, 2, 2, 5, 8, 4, 1])
+    start, step = s.get("start", 0), s.get("step", 10)
+    peaks = s.get("peaks", [2, 7] if "values" not in s else [])
     n = len(hs)
-    x0, w = 70, 46
+    w = min(46, 440 // n)
+    x0 = 70
     base, top = 190, 40
+    ymax = max(hs)
+    ymax = ymax if ymax % 5 == 0 else (ymax // 5 + 1) * 5
     o = L(x0 - 6, base, x0 + n * w + 8, base, NAVY, 2, True) + L(x0 - 6, base, x0 - 6, top - 12, NAVY, 2, True)
+    for yv in range(0, ymax + 1, 5):
+        yy = base - yv / ymax * (base - top)
+        o += L(x0 - 10, yy, x0 - 6, yy, NAVY, 1.5) + T(x0 - 14, yy + 5, str(yv), 12, GY, "end")
     for i, hgt in enumerate(hs):
-        hh = hgt / 8 * (base - top)
-        hot = i in (2, 7)
-        o += R(x0 + i * w, base - hh, w - 3, hh, ORL if hot else LT, OR if hot else BL, 2, 0)
-        o += T(x0 + i * w + w / 2 - 1, base + 18, f"{i * 10}〜", 11.5, GY)
-    o += T(x0 + n * w + 10, base + 4, "得点（点）", 13, GY, "start") + T(x0 - 6, top - 22, "人数", 13, GY, "middle")
-    o += T(x0 + 2.5 * w, 46, "山①", 16, RD, "middle", "700") + T(x0 + 7.5 * w, 28, "山②", 16, RD, "middle", "700")
-    o += T(300, 236, "山が2つ ＝ 人が集まる所が2か所 ＝ 2つのグループ", 15, NAVY, "middle", "700")
-    return svg(600, 250, "ヒストグラム。山が2つあり、得点の高いグループと低いグループがある", o)
+        hh = hgt / ymax * (base - top)
+        hot = i in peaks
+        o += R(x0 + i * w, base - hh, w - 2, hh, ORL if hot else LT, OR if hot else BL, 2, 0)
+        o += T(x0 + i * w + w / 2 - 1, base + 18, f"{start + i * step}〜", 11.5, GY)
+    o += T(x0 + n * w + 10, base + 4, f"{s.get('xl', '得点')}（点）", 13, GY, "start") + T(x0 - 6, top - 22, "人数", 13, GY, "middle")
+    for k, pi in enumerate(peaks):
+        hh = hs[pi] / ymax * (base - top)
+        o += T(x0 + pi * w + w / 2, base - hh - 8, f"山{'①②③'[k]}", 16, RD, "middle", "700")
+    cap = s.get("caption", "山が2つ ＝ 人が集まる所が2か所 ＝ 2つのグループ" if peaks else "")
+    if cap:
+        o += T(300, 236, cap, 15, NAVY, "middle", "700")
+    return svg(600, 250, "ヒストグラム" + ("。山が2つあり、得点の高いグループと低いグループがある" if len(peaks) == 2 else ""), o)
 
 
 # ---------- 2進法の位 ----------
@@ -359,6 +373,119 @@ def fig_binary(s):
     o += T(300, 158, " ＋ ".join(terms) + f" ＝ {v}", 17, NAVY, "middle", "700")
     o += T(300, 190, f"{2 ** bits}階調 ＝ 2の{bits}乗 → {bits}桁あれば表せる　答え：{digs}", 14, GY)
     return svg(600, 204, f"{v}を2進法で{bits}桁で表すと{digs}", o)
+
+
+# ---------- デジタル化の3ステップ ----------
+def fig_digitize(s):
+    f = lambda t: 3.1 + 2.3 * math.sin(2 * math.pi * t + 1.0)
+    o = ""
+    for px, title in ((10, "① 標本化：一定間隔で取り出す"), (205, "② 量子化：整数に丸める"), (400, "③ 符号化：0と1にする")):
+        o += T(px + 90, 20, title, 13.5, NAVY, "middle", "700")
+    for px in (10, 205):
+        o += R(px, 32, 180, 170, "#fff", GY, 1.5, 0)
+    mx = lambda px, t: px + 8 + t * 164
+    my = lambda v: 196 - v / 6.4 * 158
+    for px in (10, 205):
+        pts = " ".join(f"{mx(px, i / 100):.1f},{my(f(i / 100)):.1f}" for i in range(101))
+        o += f'<polyline points="{pts}" fill="none" stroke="#B7BECC" stroke-width="2"/>'
+    ts = [i / 11 for i in range(12)]
+    for t in ts:
+        o += L(mx(10, t), 196, mx(10, t), my(f(t)), BL, 1.6) + C(mx(10, t), my(f(t)), 4, BL, BL, 1)
+    q = [round(f(t)) for t in ts]
+    step = []
+    for i, t in enumerate(ts):
+        step.append(f"{mx(205, t) - 7:.1f},{my(q[i]):.1f} {mx(205, t) + 7:.1f},{my(q[i]):.1f}")
+        o += C(mx(205, t), my(q[i]), 3.6, OR, OR, 1)
+    o += f'<polyline points="{" ".join(step)}" fill="none" stroke="{OR}" stroke-width="2"/>'
+    for v in range(0, 7):
+        o += T(203, my(v) + 4, str(v), 10.5, GY, "end")
+    for k, (a, b) in enumerate(((3, "011"), (5, "101"), (2, "010"), (4, "100"))):
+        o += T(430, 70 + k * 36, f"{a} → {b}", 18, BL, "start", "700")
+    return svg(600, 214, "デジタル化の3ステップ。標本化で取り出し、量子化で整数にし、符号化で0と1にする", o)
+
+
+# ---------- 散布図3つ（正・負・なし） ----------
+def _lcg(seed):
+    x = seed
+    while True:
+        x = (x * 1103515245 + 12345) % 2147483648
+        yield x / 2147483648
+
+
+def fig_scatter3(s):
+    o = ""
+    rnd = _lcg(7)
+    kinds = (("正の相関（r＝約＋0.9）", "pos"), ("負の相関（r＝約−0.9）", "neg"), ("相関なし（r＝約0）", "none"))
+    for k, (title, kind) in enumerate(kinds):
+        px = 8 + k * 198
+        o += T(px + 94, 20, title, 13.5, NAVY, "middle", "700") + R(px, 30, 188, 170, "#fff", GY, 1.5, 0)
+        for i in range(26):
+            t = i / 25
+            if kind == "none":
+                x, y = next(rnd), next(rnd)
+            else:
+                v = t + (next(rnd) - .5) * 0.18
+                x, y = t, (v if kind == "pos" else 1 - v)
+            x, y = min(max(x, .03), .97), min(max(y, .03), .97)
+            o += C(px + 8 + x * 172, 192 - y * 152, 3.6, BL, BL, 1, .9)
+    return svg(600, 212, "散布図。正の相関、負の相関、相関なしの3つ", o)
+
+
+# ---------- 回帰直線つきの散布図2つ（決勝進出／予選敗退） ----------
+def fig_regpair(s):
+    o = ""
+    for k, p in enumerate(s["panels"]):
+        px = 4 + k * 298
+        x0, x1, y0, y1 = px + 52, px + 280, 40, 190
+        xmin, xmax, ymax = p["xmin"], p["xmax"], p.get("ymax", 2.5)
+        sx = lambda v: x0 + (v - xmin) / (xmax - xmin) * (x1 - x0)
+        sy = lambda v: y1 - v / ymax * (y1 - y0)
+        o += T((x0 + x1) / 2, 18, p["title"], 14.5, NAVY, "middle", "700")
+        o += R(x0, y0, x1 - x0, y1 - y0, "#fff", GY, 1.5, 0)
+        for yv in (0, 0.5, 1.0, 1.5, 2.0, 2.5):
+            o += L(x0, sy(yv), x1, sy(yv), "#E3E6EC", 1) + T(x0 - 6, sy(yv) + 4, f"{yv:.1f}", 11, GY, "end")
+        for xv in p["xticks"]:
+            o += L(sx(xv), y0, sx(xv), y1, "#E3E6EC", 1) + T(sx(xv), y1 + 15, str(xv), 11, GY)
+        for (xx, yy) in p["points"]:
+            o += C(sx(xx), sy(yy), 3.8, "#222", "#222", 1)
+        a, b = p["a"], p["b"]
+        o += L(sx(p["lx0"]), sy(a * p["lx0"] + b), sx(p["lx1"]), sy(a * p["lx1"] + b), "#111", 2.2, False, "2 3")
+        o += T(x0 + 8, y0 + 18, p["eq"], 12.5, "#111", "start")
+        o += T((x0 + x1) / 2, y1 + 32, "1試合当たりのパス成功数（本）", 11.5, GY)
+        if k == 0:
+            o += T(px + 9, (y0 + y1) / 2, "得点", 12, GY, "middle")
+    return svg(600, 232, "パス成功数と得点の散布図と回帰直線（決勝進出チームと予選敗退チーム）", o)
+
+
+# ---------- 選択肢に使う小さな図（ウ〜オの解答群など） ----------
+def fig_choice(s):
+    n = s["name"]
+    D, M, Lg = "#444", "#999", "#ccc"
+    o = ""
+    if n == "cycle":
+        for (cx, cy, c) in ((100, 32, D), (160, 78, M), (100, 124, Lg), (40, 78, M)):
+            o += C(cx, cy, 22, c, c, 0)
+        o += L(118, 40, 140, 58, D, 2, True) + L(146, 98, 124, 112, D, 2, True) + L(80, 118, 58, 98, D, 2, True) + L(54, 58, 80, 40, D, 2, True)
+    elif n == "tree":
+        o += R(72, 10, 56, 24, D, D, 0, 0) + L(100, 34, 100, 54, D, 3) + L(40, 54, 160, 54, D, 3)
+        for cx in (40, 100, 160):
+            o += L(cx, 54, cx, 72, D, 3) + R(cx - 22, 72, 44, 40, M, M, 0, 0)
+    elif n == "venn3":
+        o += C(82, 62, 46, "#bbb", "#999", 1.5, .55) + C(122, 62, 46, "#888", "#777", 1.5, .45) + C(102, 98, 46, "#444", "#333", 1.5, .55)
+    elif n == "pyramid":
+        o += f'<polygon points="100,8 118,38 82,38" fill="{D}"/>'
+        rows = [(38, 62, 118, 82), (62, 86, 135, 65), (86, 110, 152, 48), (110, 134, 168, 32)]
+        for k, (ya, yb, xr, xl) in enumerate(rows):
+            wa = 18 + k * 17
+            wb = 18 + (k + 1) * 17
+            o += f'<polygon points="{100 - wa},{ya} {100 + wa},{ya} {100 + wb},{yb} {100 - wb},{yb}" fill="{[M, Lg, M, Lg][k]}" stroke="#fff" stroke-width="1.5"/>'
+    elif n == "matrix":
+        o += R(50, 14, 48, 54, D, D, 0, 4) + R(104, 14, 48, 54, M, M, 0, 4) + R(50, 74, 48, 54, Lg, Lg, 0, 4) + R(104, 74, 48, 54, Lg, Lg, 0, 4)
+        o += L(101, 140, 101, 8, D, 1.8, True) + L(20, 71, 182, 71, D, 1.8, True)
+    elif n == "radial":
+        o += L(100, 70, 100, 30, D, 3) + L(100, 70, 62, 100, D, 3) + L(100, 70, 138, 100, D, 3)
+        o += C(100, 30, 20, Lg, Lg, 0) + C(60, 104, 20, Lg, Lg, 0) + C(140, 104, 20, Lg, Lg, 0) + C(100, 72, 24, D, D, 0)
+    return svg(200, 146, "図：" + n, o)
 
 
 def render(spec):

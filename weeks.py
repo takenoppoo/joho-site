@@ -31,6 +31,7 @@ def load_weeks():
             tango=_load(os.path.join(d, "tango.json")),
             kakunin=_load(os.path.join(d, "kakunin.json")),
             shikou=_load(os.path.join(d, "shikou.json")),
+            zu=_load(os.path.join(d, "zu.json")) if os.path.exists(os.path.join(d, "zu.json")) else [],
         ))
     return sorted(weeks, key=lambda w: w["n"])
 
@@ -43,4 +44,25 @@ def with_figs(kakunin):
         if q.get("fig"):
             q["fig"] = figs.render(q["fig"])
         out.append(q)
+    return out
+
+
+def _opt(o):
+    if isinstance(o, dict) and "fig" in o:
+        return {"svg": figs.render({"type": "choice", "name": o["fig"]})}
+    return {"t": o}
+
+
+def with_shikou_figs(days):
+    """思考問題のデータ：選択肢の図・本文中の図（"fig" 仕様）を SVG に、選択肢の文字を {"t": …} にそろえる"""
+    out = []
+    for d in days:
+        d = json.loads(json.dumps(d))
+        for g in d.get("groups", {}).values():
+            g["options"] = [_opt(o) for o in g["options"]]
+        for p in d.get("parts", []):
+            for b in p.get("blocks", []):
+                if b.get("t") == "fig":
+                    b["svg"] = figs.render(b.pop("spec"))
+        out.append(d)
     return out

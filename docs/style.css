@@ -106,3 +106,43 @@ ul.plain{margin:.3em 0;padding-left:1.3em}
 .toc-c .tg{display:inline-block;background:var(--navy);color:#fff;font-weight:700;padding:2px 12px;border-radius:3px;font-size:1.05rem}
 .toc-c h3{margin:14px 0 6px;font-size:1.3rem;color:#1d2433}
 .toc-c p{margin:0}
+
+/* 単語帳の図と表 */
+.zh{font-size:1.08rem;color:var(--navy);margin:1.3em 0 .5em;border-left:5px solid var(--blue2);padding-left:10px}
+.zu-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 22px}
+.zu-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.tbwrap{overflow-x:auto;margin:6px 0}
+table.tb{border-collapse:collapse;width:100%;font-size:.95rem;text-align:center}
+table.tb th,table.tb td{border:1px solid #b9c6e0;padding:5px 10px}
+table.tb th{background:#EEF3FC;color:var(--navy);font-weight:700}
+
+/* 思考問題（ボタン式） */
+.part .pl{display:inline-block;background:var(--navy);color:#fff;border-radius:4px;padding:0 10px;margin-bottom:4px}
+.talk .who{color:var(--navy);margin-right:.6em}
+.bl{display:inline-block;min-width:2.4em;text-align:center;border:2px solid var(--blue2);background:#fff;border-radius:6px;padding:0 6px;font-weight:700;cursor:pointer;color:var(--navy);line-height:1.5}
+.bl.fill{background:#FFF1DC;border-color:var(--orange)}
+pre.code{background:#fff;border:1px solid #b9c6e0;border-radius:8px;padding:8px 12px;overflow-x:auto;font-size:.92rem;line-height:1.7;margin:6px 0;font-family:ui-monospace,Menlo,Consolas,"Noto Sans JP",monospace}
+.cap{font-size:.85rem;color:var(--gray);margin:2px 0 6px}
+table.tb caption{caption-side:top;font-size:.85rem;color:var(--gray);padding:2px 0}
+.gbox{background:#fff;border:1px solid #b9c6e0;border-radius:8px;padding:6px 12px;margin:8px 0}
+.gt{color:var(--navy)}
+.gi{display:flex;gap:8px;align-items:flex-start;margin:4px 0}
+.gn{flex:none;width:1.6em;height:1.6em;line-height:1.6em;text-align:center;border-radius:50%;background:var(--navy);color:#fff;font-size:.85rem;font-weight:700}
+.gbox.figs .gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.gbox.figs .gi{flex-direction:column;align-items:center;border:1px solid #d5dcec;border-radius:8px;padding:4px}
+.gf svg{width:100%;max-width:210px;height:auto;display:block}
+.ansp .arow{display:flex;align-items:center;gap:8px;margin:5px 0;padding:3px 6px;border-radius:8px;border:2px solid transparent}
+.ansp .arow.flash{border-color:var(--orange)}
+.ansp .arow.ok{background:#E7F5EC}.ansp .arow.ng{background:#FCE8EA}
+.al{flex:none;width:1.8em;font-weight:700;color:var(--navy);text-align:center}
+.abtn{display:flex;flex-wrap:wrap;gap:5px}
+.ab{min-width:2.3em;padding:3px 8px;border:2px solid #9aa3b5;border-radius:8px;background:#fff;font-size:1rem;font-family:inherit;cursor:pointer}
+.ab.sel{border-color:var(--navy);background:#EAF0FB;font-weight:700}
+.ab.right{border-color:var(--green);background:#CFEBDA;font-weight:700}
+.ab:disabled{cursor:default}
+.ab.sel:disabled:not(.right){border-color:var(--red);background:#F8D7DB}
+.ab.right.sel{border-color:var(--green);background:#CFEBDA}
+details.exd{border:1px solid #b9c6e0;border-radius:8px;margin:8px 0;background:#fff}
+details.exd summary{cursor:pointer;padding:6px 12px;font-weight:700}
+details.exd .exp{padding:0 14px 10px}
+.fin{background:#FFF8E8;border-left:5px solid var(--orange);padding:6px 10px;margin:8px 0}

@@ -6,7 +6,8 @@
 """
 import json, os, html
 from datetime import date
-from weeks import load_areas, load_weeks, with_figs
+from weeks import load_areas, load_weeks, with_figs, with_shikou_figs
+import figs
 
 # ============ CONFIG（ここだけ書き換える） ============
 SITE_NAME = "情報屋"
@@ -103,6 +104,48 @@ def write_js(fname, var, obj):
 write_js("data-areas.js", "AREAS", AREAS)
 
 
+def render_zu(sections):
+    """単語帳の「図と表」（data/wNN/zu.json）をHTMLにする"""
+    def table(t):
+        h = ""
+        if t.get("head"):
+            h = "<thead><tr>" + "".join(f"<th>{E(c)}</th>" for c in t["head"]) + "</tr></thead>"
+        rows = ""
+        for r in t["rows"]:
+            cells = "".join((f"<th>{E(c)}</th>" if (i == 0 and t.get("rowhead")) else f"<td>{E(c)}</td>") for i, c in enumerate(r))
+            rows += f"<tr>{cells}</tr>"
+        return f'<div class="tbwrap"><table class="tb">{h}<tbody>{rows}</tbody></table></div>'
+
+    def item(it):
+        if "table" in it:
+            return table(it["table"])
+        if "fig" in it:
+            return f'<div class="figbox">{figs.render(it["fig"])}</div>'
+        return f'<p>{E(it["p"])}</p>'
+
+    html_, i = "", 0
+    while i < len(sections):
+        s = sections[i]
+        if s.get("half"):
+            group = []
+            while i < len(sections) and sections[i].get("half"):
+                group.append(sections[i])
+                i += 1
+            colnos = sorted({g.get("col", k) for k, g in enumerate(group)})
+            html_ += '<div class="zu-row">' + "".join(
+                "<div>" + "".join(f'<h3 class="zh">{E(g["h"])}</h3>' + "".join(item(x) for x in g["items"])
+                                  for k, g in enumerate(group) if g.get("col", k) == c) + "</div>" for c in colnos) + "</div>"
+            continue
+        body = "".join(item(x) for x in s["items"])
+        if s.get("cols") == 2:
+            body = f'<div class="zu-cols">{body}</div>'
+        html_ += f'<section class="zu-sec"><h3 class="zh">{E(s["h"])}</h3>{body}</section>'
+        i += 1
+    if not html_:
+        return ""
+    return '<h2 class="t">図と表</h2><p class="small">文字だけだと分かりにくい語を、図や表でまとめました。</p>' + html_
+
+
 def weeknav(n, active):
     items = [("index.html", "まとめ"), ("tango.html", "単語帳"), ("kakunin.html", "確認テスト"), ("shikou.html", "思考問題")]
     return (f'<div class="wknav"><b>第{n}週</b>' +
@@ -156,11 +199,7 @@ f"""{weeknav(n, "index.html")}
                 f'<td class="chk">' + "".join(
                     f'<label><input type="checkbox" data-k="{t["no"]}-{k}" aria-label="{E(t["word"])} 復習{k}回目"></label>' for k in (1, 2, 3))
                 + '</td></tr>')
-    zu = [f for f in ("zu-2.png", "zu-3.png") if os.path.exists(os.path.join(ROOT, OUT, wd, "img", f))]
-    zu_html = ""
-    if zu:
-        zu_html = ('<h2 class="t">図と表</h2><p class="small">文字だけだと分かりにくい語を、図や表でまとめました。</p><div class="zu">'
-                   + "".join(f'<img src="img/{f}" alt="図と表（{i + 1}）" loading="lazy">' for i, f in enumerate(zu)) + "</div>")
+    zu_html = render_zu(W.get("zu", []))
     tpdf = '　<a href="pdf/tango.pdf">単語帳PDFをダウンロード</a>' if pdf("tango.pdf") else ""
     page(f"{wd}/tango.html", f"第{n}週 単語帳 最重要{len(TANGO)}語",
          f"共通テスト情報Ⅰで知識問題として問われる最重要{len(TANGO)}語（第{n}週）。意味（赤字）はボタン1つで隠せます。分野別の絞り込みもできます。",
@@ -199,31 +238,24 @@ f"""{weeknav(n, "kakunin.html")}
 {AD_BOTTOM}
 """, scripts=("../data-areas.js", "data-kakunin.js", "../app.js"), base="../")
 
-    # --- 思考問題 ---
-    cs = ""
-    for s in SHIKOU:
-        tags = "".join(area_tag(a) for a in s["areas"])
-        cs += (f'<div class="card"><h3>{s["day"]}日目　{E(s["title"])}</h3><p>{E(s["theme"])}</p>'
-               f'<p class="small">{tags}　空欄 {s["blanks"]}か所／約{s["minutes"]}分</p>'
-               f'<div class="lk"><a class="btn" href="pdf/shikou-mondai.pdf#page={s["q_page"]}">問題をひらく</a>'
-               f'<a class="btn g" href="pdf/shikou-kaisetsu.pdf#page={s["k_page"]}">解答・解説</a></div></div>')
+    # --- 思考問題（ボタン式。PDFは印刷用） ---
+    write_js(f"{wd}/data-shikou.js", "SHIKOU", with_shikou_figs(SHIKOU))
+    spdf = ""
+    if os.path.exists(os.path.join(ROOT, OUT, wd, "pdf", "shikou-mondai.pdf")):
+        spdf = (f'<p class="small">印刷して解きたい人は：<a href="pdf/shikou-mondai.pdf">問題PDF（{len(SHIKOU)}日分）</a>｜'
+                f'<a href="pdf/shikou-kaisetsu.pdf">解答・解説PDF</a></p>')
     page(f"{wd}/shikou.html", f"第{n}週 思考問題",
-         f"第{n}週の共通テスト形式の思考問題（{len(SHIKOU)}日分）。1日12か所の空欄・約25分。解答・解説つき。",
+         f"第{n}週の共通テスト形式の思考問題（{len(SHIKOU)}日分）。ボタンで答えて、その場で答え合わせ。1日12か所の空欄・約25分。解説つき。",
 f"""{weeknav(n, "shikou.html")}
 <h1>第{n}週　思考問題</h1>
-<p class="small">共通テストの形式で、会話文・図・表・プログラムを読んで空欄を埋めます。1日約25分。単語帳は見ないで、計算用紙を使って解こう。</p>
+<p class="small">共通テストの形式で、会話文・図・表・プログラムを読んで空欄を埋めます。上の「日」を選び、解答欄のボタンで答えます。まちがえたら解説を読んで、選択肢の順番が変わった同じ問題にもう一度。1日約25分。計算用紙を使って解こう。</p>
 {AD_TOP}
-<div class="cards">{cs}</div>
-<h2 class="t">進め方</h2>
-<ol class="plain">
-<li>「問題をひらく」を開き、紙に書き写すか印刷して解く（解答欄に番号・数字を書く）。</li>
-<li>解き終わったら「解答・解説」で答え合わせ。できた数を記録する。</li>
-<li>まちがえた所は、解説の「解く手順」をなぞって、もう一度。</li>
-</ol>
-<p>全部まとめてダウンロード：<a href="pdf/shikou-mondai.pdf">問題（{len(SHIKOU)}日分）</a>｜<a href="pdf/shikou-kaisetsu.pdf">解答・解説（{len(SHIKOU)}日分）</a></p>
-<p class="note">いまは問題をPDFで公開しています。画面で答え合わせできる形にするのは、あとから追加できます。</p>
+<div id="shikou-app" class="app"></div>
+{spdf}
+<noscript><p class="note">この問題はJavaScriptを使います。ブラウザの設定で有効にしてください。</p></noscript>
+<script>window.WEEK={n};</script>
 {AD_BOTTOM}
-""", base="../")
+""", scripts=("../data-areas.js", "data-shikou.js", "../app.js"), base="../")
     ALL_PAGES += [f"{wd}/{p}" for p in ("index.html", "tango.html", "kakunin.html", "shikou.html")]
 
 # ---------------- トップ（目次） ----------------

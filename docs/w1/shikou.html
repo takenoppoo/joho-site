@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第1週 思考問題｜情報屋</title>
-<meta name="description" content="第1週の共通テスト形式の思考問題（4日分）。1日12か所の空欄・約25分。解答・解説つき。">
+<meta name="description" content="第1週の共通テスト形式の思考問題（4日分）。ボタンで答えて、その場で答え合わせ。1日12か所の空欄・約25分。解説つき。">
 <meta property="og:title" content="第1週 思考問題｜情報屋">
-<meta property="og:description" content="第1週の共通テスト形式の思考問題（4日分）。1日12か所の空欄・約25分。解答・解説つき。">
+<meta property="og:description" content="第1週の共通テスト形式の思考問題（4日分）。ボタンで答えて、その場で答え合わせ。1日12か所の空欄・約25分。解説つき。">
 <meta property="og:type" content="website">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="../favicon.ico" sizes="48x48">
@@ -22,17 +22,12 @@
 <main class="wrap">
 <div class="wknav"><b>第1週</b><a href="index.html">まとめ</a><a href="tango.html">単語帳</a><a href="kakunin.html">確認テスト</a><a href="shikou.html" class=on>思考問題</a></div>
 <h1>第1週　思考問題</h1>
-<p class="small">共通テストの形式で、会話文・図・表・プログラムを読んで空欄を埋めます。1日約25分。単語帳は見ないで、計算用紙を使って解こう。</p>
+<p class="small">共通テストの形式で、会話文・図・表・プログラムを読んで空欄を埋めます。上の「日」を選び、解答欄のボタンで答えます。まちがえたら解説を読んで、選択肢の順番が変わった同じ問題にもう一度。1日約25分。計算用紙を使って解こう。</p>
 <!-- 広告枠（上）：AdSense承認後、ここに広告コードを貼る -->
-<div class="cards"><div class="card"><h3>1日目　第1問型</h3><p>通信・図の選択・デジタル化・IPアドレス</p><p class="small"><span class="tag a1">問題解決</span><span class="tag a2">情報デザイン</span><span class="tag a4">ネットワーク・データ</span>　空欄 12か所／約25分</p><div class="lk"><a class="btn" href="pdf/shikou-mondai.pdf#page=1">問題をひらく</a><a class="btn g" href="pdf/shikou-kaisetsu.pdf#page=1">解答・解説</a></div></div><div class="card"><h3>2日目　第2問型</h3><p>議席（枠）の比例配分とプログラム</p><p class="small"><span class="tag a3">プログラミング</span>　空欄 12か所／約25分</p><div class="lk"><a class="btn" href="pdf/shikou-mondai.pdf#page=4">問題をひらく</a><a class="btn g" href="pdf/shikou-kaisetsu.pdf#page=5">解答・解説</a></div></div><div class="card"><h3>3日目　第3問型</h3><p>枠を配分するプログラム（条件の追加）</p><p class="small"><span class="tag a3">プログラミング</span>　空欄 12か所／約25分</p><div class="lk"><a class="btn" href="pdf/shikou-mondai.pdf#page=6">問題をひらく</a><a class="btn g" href="pdf/shikou-kaisetsu.pdf#page=8">解答・解説</a></div></div><div class="card"><h3>4日目　第4問型</h3><p>サッカーのデータ分析（相関・回帰・クロス集計）</p><p class="small"><span class="tag a4">ネットワーク・データ</span>　空欄 12か所／約25分</p><div class="lk"><a class="btn" href="pdf/shikou-mondai.pdf#page=8">問題をひらく</a><a class="btn g" href="pdf/shikou-kaisetsu.pdf#page=11">解答・解説</a></div></div></div>
-<h2 class="t">進め方</h2>
-<ol class="plain">
-<li>「問題をひらく」を開き、紙に書き写すか印刷して解く（解答欄に番号・数字を書く）。</li>
-<li>解き終わったら「解答・解説」で答え合わせ。できた数を記録する。</li>
-<li>まちがえた所は、解説の「解く手順」をなぞって、もう一度。</li>
-</ol>
-<p>全部まとめてダウンロード：<a href="pdf/shikou-mondai.pdf">問題（4日分）</a>｜<a href="pdf/shikou-kaisetsu.pdf">解答・解説（4日分）</a></p>
-<p class="note">いまは問題をPDFで公開しています。画面で答え合わせできる形にするのは、あとから追加できます。</p>
+<div id="shikou-app" class="app"></div>
+<p class="small">印刷して解きたい人は：<a href="pdf/shikou-mondai.pdf">問題PDF（4日分）</a>｜<a href="pdf/shikou-kaisetsu.pdf">解答・解説PDF</a></p>
+<noscript><p class="note">この問題はJavaScriptを使います。ブラウザの設定で有効にしてください。</p></noscript>
+<script>window.WEEK=1;</script>
 <!-- 広告枠（下）：AdSense承認後、ここに広告コードを貼る -->
 
 </main>
@@ -40,6 +35,6 @@
 <p><a href="../howto.html">使い方</a>｜<a href="../about.html">このサイトについて</a>｜<a href="../contact.html">お問い合わせ</a>｜<a href="../privacy.html">プライバシーポリシー</a></p>
 <p>© 情報屋　掲載の問題・解説はオリジナルです。</p>
 </div></footer>
-
+<script src="../data-areas.js"></script><script src="data-shikou.js"></script><script src="../app.js"></script>
 </body>
 </html>

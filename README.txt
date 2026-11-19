@@ -60,3 +60,8 @@ python3 tools/make_logo.py（fontTools と Noto Sans CJK JP Black が必要。do
 1. build.py の ADS_ENABLED を True にして `python3 build.py` → privacy.html の広告の文章がAdSense用に切り替わる
 2. 各ページの head・AD_TOP / AD_BOTTOM のコメントの所に広告コードを貼る
 3. docs/ を GitHub に上げ直す
+
+【思考問題（ボタン式）】
+ data/wNN/shikou.json を、tools/make_shikou_w01.py のように作ります（空欄・解答群・解説を1か所にまとめる）。
+ python3 tools/make_shikou_w01.py → python3 build.py で wN/shikou.html と data-shikou.js ができます。
+ 単語帳の「図と表」は data/wNN/zu.json（表・図の仕様）に書きます。
