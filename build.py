@@ -53,7 +53,7 @@ VER = hashlib.md5(b"".join(open(f, "rb").read() for f in sorted(glob.glob(os.pat
 
 def page(fname, title, desc, body, active=None, scripts=(), base=""):
     """fname は docs からの相対パス。週のページ（w1/…）は base="../" にする"""
-    full_title = SITE_NAME if fname == "index.html" else f"{title}｜{SITE_NAME}"
+    full_title = f"高校情報対策サイト「{SITE_NAME}」" if fname == "index.html" else f"{title}｜{SITE_NAME}"
     nav = "".join(f'<a href="{base}{h}"{" class=on" if h == active else ""}>{n}</a>' for h, n in NAV)
     sc = "".join(f'<script src="{s}?v={VER}"></script>' for s in scripts)
     doc = f"""<!DOCTYPE html>
